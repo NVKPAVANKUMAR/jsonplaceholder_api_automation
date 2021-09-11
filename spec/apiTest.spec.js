@@ -1,6 +1,9 @@
 let supertest = require('supertest');
 let expect = require('chai').expect;
 var data = require('../utils/test_data');
+const chai = require('chai');
+const asserttype = require('chai-asserttype');
+chai.use(asserttype);
 var app = 'https://jsonplaceholder.typicode.com';
 
 describe('JSON place holder home page', () => {
@@ -20,6 +23,19 @@ describe('JSON place holder home page', () => {
         expect(res.body.userId).to.equal(1);
         expect(res.body.id).to.equal(1);
         expect(res.body.title).not.null;
+        done();
+      });
+  });
+
+  it('Validates json response data from /users/1', (done) => {
+    supertest(app)
+      .get('/users/1')
+      .end((err, res) => {
+        if (err) return done(err);
+        expect(res.status).to.equal(200);
+        expect(res.body.name).to.be.string();
+        expect(res.body.id).to.be.number();
+        expect(res.body.company).to.be.object();
         done();
       });
   });
